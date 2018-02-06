@@ -1,0 +1,3 @@
+data("Mtcars")
+
+summary(mtcars)
