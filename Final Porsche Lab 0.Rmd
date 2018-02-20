@@ -1,0 +1,124 @@
+---
+title: 'Lab 0: Porsche'
+author: "Eddie Passero"
+date: "2/18/2018"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+Porsche <- read.csv("~/Downloads/PorschePrice.csv")
+```
+
+## Data Set
+
+I have used the Porsche data set for this lab. Below is the full data set I will be using.
+
+```{r}
+Porsche
+```
+
+## PART 1
+## Variables
+
+We have three variables:
+
+1. Price
+  
+  + This is the price of each observation (in $1,000s). It is a quantitative variable. 
+  
+2. Age
+
+  + This is the age of each Porsche/observation in the data set. It is also a quantiative variable.
+  
+3. Mileage
+
+  + This variable is the number of miles on the car/observation in the data (in 1,000s). This is also a quantitative variable. 
+
+
+## Finding the Best Fit Line
+
+Below is a scatterplot for mileage based on price of the car, with a line of best fit plotted on it.
+
+```{r}
+qplot(Price, Mileage, data=Porsche)+geom_smooth(method="lm", se=FALSE)
+```
+
+As we can see, there is a strong negative linear relationship between these two variables. This tends to indicate that as price increases, mileage on the observations also tend to decrease.
+
+## Line of Best Fit Equation
+
+Below is a call for the intercept and slope of the line of best fit that is plotted above.
+
+```{r}
+lm(Mileage~Price, data=Porsche)
+```
+
+With the results from the *r code above, we learn that the equation for the line of best fit is $$ y = -1.348x + 102.995 $$ This equation makes sense, as the slope is negative, consistent with the pictured line of best fit in the scatterplot. This equation means that for every $1,000 increase in the price, the predicted value of the mileage on the car will decrease by 1,348 miles.
+
+## Fit of the Model
+
+There are a few conditions to consider when assessing the fit of the model
+
+1. Residuals
+
+  + The residuals can be seen in the scatterplot by how far the actual data points are from the line of best fit. I would say the data points are not too far off from the line of best fit, indicating small residuals on the whole, and small residuals are a good condition for the accuracy of the model.
+  
+2. Linearity
+
+  + This data set and the line of best fit seem to be very linear, a great sign for the fit of this model.
+  
+3. Constant Variance
+
+  + It seems that our data set is pretty evenly spread above and below the line of best fit, another positive sign for the fit of the model.
+  
+4. Random Data
+
+  + We cannot know from the data set alone that it was randomly collected, but because our other factors are seeming to suggest that this is a good fit model, we will hope that this data was collected in a statistically sound method.
+  
+Overall I would say this model is a nice fit for the data set we have.
+
+## Predicting a Value and it's Accuracy
+
+Let's test this line of best fit equation. For this, we will use the data point where the price of the car is $56.9$. The actual value for the mileage for this data point is $43$.
+
+Using our line of best fit equation, we get that the predicted value for the mileage of a car with a price value of $56.9$ is $26.294$. This makes the residual for this data point $-16.706$. Because we have an observation in our data set with that price, we are able to calculate a residual, but would not be able to do so if we were merely using our line of best fit equation to attempt to predict the mileage for a price we do not have in our data set.
+
+## PART 2: Filter and Re-Analysis
+
+We will now use the filter function in $dpylr$ to obtain a new set of data, where the only data in the new set is observations with the age of the car greater than or equal to $4$.
+
+```{r}
+PorscheFilter <- filter(Porsche, Age >= 4)
+```
+
+```{r echo = FALSE}
+PorscheFilter
+```
+
+Next we will replot this dataset, with a line of best fit.
+
+```{r}
+qplot(Price, Mileage, data=PorscheFilter)+geom_smooth(method="lm", se=FALSE)
+```
+
+Upon first glance, it looks as if a similar pattern appears. There is a line of best fit with a negative slope and the points seem to be fairly evenly spread above and below the line. It is interesting to note that the axises on the graph have altered a little in order to accomodate what works best with the new data set "PorscheFilter". 
+
+Now we will determine the equation of the line of best fit for this new scatterplot.
+
+```{r}
+lm(Mileage~Price, data=PorscheFilter)
+```
+
+The equation is:
+ $$ y = -1.581x + 112.298 $$
+ This means for every increase of $1,000$ in the price of the car, the predicated mileage will decrease by $1,581$ miles.
+
+The conditions listed in Part 1 for "Fit of the Model" seem to apply to this new "PorscheFilter" data set as well, as the observed values and the line of best fit are very similar. As such, I would say this is a good fit model for this new data set as well.
+
+## Comparing the Two Analyses
+Overall, I find that the two data sets are similar. What this means is that our collected data does a good job of collecting randomly, and that the two variables of "Price" and "Mileage" may actually have a relationship between them, not just a correlation. A large shift in the second analysis would suggest that Age of the car played a part in the mileage and that a relationship between Mileage and Price was less likely. The results are pretty similar in both analyses, with the exception of a couple seemingly larger residuals on the second plot. However, on the whole, the results of the new analysis are very similar to the results of the old analysis.
